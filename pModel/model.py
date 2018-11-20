@@ -80,7 +80,13 @@ class Cashier(object):
             self._customerQueue.enQueue(c)
     
     def serveCustomer(self, currentTime):
-        pass
+        #Not able to serve multi-customers at the same time
+        if None == self._currentCustomer:
+            #No customer now
+            if self._customerQueue.isEmpty():
+                return
+            else:
+                pass
 
     def toString(self):
         pass
@@ -88,7 +94,7 @@ class Cashier(object):
 
 class MarketModel(object):
     """
-    This class will do：
+    This class will do:
         1. Maintain an virtual clock which drives the whole market system to run.
         2. Generate one cashier.
         3. Save the input parameters from terminal
