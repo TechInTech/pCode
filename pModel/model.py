@@ -71,7 +71,7 @@ class Cashier(object):
     """
     def __init__(self):
         self._totalCustomerWaitTime = 0
-        self._customerServed = 0
+        self._numnerOfCustomerServed = 0
         self._currentCustomer = None
         self._customerQueue = Queue()
 
@@ -85,11 +85,32 @@ class Cashier(object):
             #No customer now
             if self._customerQueue.isEmpty():
                 return
+            #To serve customers if the queue is not empty
             else:
-                pass
+                self._currentCustomer = self._customerQueue.deQueue()
+                self._totalCustomerWaitTime += currentTime - self._currentCustomer.arriveTime()
 
-    def toString(self):
-        pass
+        #Send a signal to customer.
+        self._currentCustomer.Served()
+
+        #Finish serving customer, and release the resource
+        if(0 == self._currentCustomer.amountOfServiceNeed()):
+            self._currentCustomer = None
+            self._numnerOfCustomerServed += 1
+
+
+    def __str__(self):
+        printStr = "TOTALS FOR THE CASHIER\n" + \
+        "Number of customer servered: \n" + \
+        str(self._numnerOfCustomerServed) + "\n"
+        if(0 != self._numnerOfCustomerServed):
+            aveWaitTime = self._totalCustomerWaitTime / self._numnerOfCustomerServed
+            printStr += "Number of cutomer in queue: \n" + str(len(self._customerQueue)) + "\n" \
+            + "Average time customer spent " + \
+            "waitting to be servered: \n" + \
+            "%-5.2f" % aveWaitTime
+
+        return  printStr
 
 
 class MarketModel(object):
@@ -110,8 +131,16 @@ class MarketModel(object):
         """
         This function does generate signal which drives the simulation
         """
-        for currentTime in self._totalTime2Run:
-            pass
+        #The current stands for a tick in clock, and it is sent to cashier as the signal to serve customers
+        for currentTime in range(self._totalTime2Run):
+            #Try to generage a customer
+            customer = Customer.generateCustomer(self._probobilityOfNewArrival, currentTime, self._averageServeTimePerCus)
+            #Add customer into chashier's queue
+            if None != customer:
+                self._cashier.addCustomer(customer)
+            
+            #Receive signal from clock and process 
+            self._cashier.serveCustomer(currentTime)
     
     def __str__(self):
         return str(self._cashier)
@@ -125,6 +154,8 @@ def main():
 
     #To initial market object
     market = MarketModel(totalRunningTime, avarageServeTimePerCustomer, probabilityOfCustomerArrival)
+    market.runSimulation()
+    print(market)
 
 if "__main__" == __name__:
     main()
