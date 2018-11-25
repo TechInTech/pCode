@@ -10,7 +10,7 @@ Initial Date: 18th Nov, 2018
 import sys
 sys.path.append("/cygdrive/d/pCode/")
 from pNode.node import Node
-from random import randint
+import random
 
 class Queue(object):
     """
@@ -84,13 +84,40 @@ class Queue(object):
         else:
             return False
 
+class priorityQueue(Queue):
+    """
+    This class is sub class of Queue. This class implements the priority class.
+    """
+
+    def __init__(self):
+        Queue.__init__(self)
+
+    def enQueue(self, data):
+        if self.isEmpty() or data >= self._rear.getData():
+            Queue.enQueue(self, data)
+        else:
+            #Search for a proper position for new node
+            probe = self._head
+            while(data >= probe.getData()):
+                trailer = probe
+                probe = probe.getNext()
+            
+            newNode = Node(data, probe)
+            
+            if probe == self._head:
+                self._head = newNode
+            else:
+                trailer.setNext(newNode)
+        self._size += 1
+            
+
 def main():
-    q = Queue()
-    for i in range(10):
-        q.enQueue(i)
+    pq = priorityQueue()
+    for _ in range(10):
+        pq.enQueue(random.randint(1, 100))
     #print(q)
 
-    for item in q:
+    for item in pq:
         print(item)
 
 if "__main__" == __name__:
