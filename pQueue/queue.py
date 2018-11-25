@@ -72,14 +72,17 @@ class Queue(object):
         return 0 == self._size
 
     def __eq__(self, other):
-        if other is self:
-            return True
-        if type(other) != type() or len(self) != len(other):
-            return False
-        for item in other:
-            if not item in self:
+        if None != other:
+            if other is self:
+                return True
+            if type(other) != type(other) or len(self) != len(other):
                 return False
-        return True
+            for item in other:
+                if not item in self:
+                    return False
+            return True
+        else:
+            return False
 
 def main():
     q = Queue()
