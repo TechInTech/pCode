@@ -9,7 +9,7 @@ Initial Date: Nov 25th, 2018
 """
 import sys
 sys.path.append("/cygdrive/f/pCode")
-from pQueue.queue import Queue
+from pQueue.queue import PriorityQueue
 from pComparable.comparable import Comparable
 
 #Const
@@ -50,7 +50,7 @@ class Patient(object):
 
 class ERModel(object):
     def __init__(self):
-        self._priorityQueue = Queue()
+        self._priorityQueue = PriorityQueue()
         self._patientNum = 0
 
     def isEmpty(self):
@@ -60,8 +60,7 @@ class ERModel(object):
         self._priorityQueue.enQueue(patient)
 
     def treatNext(self):
-        return None
-
+        return self._priorityQueue.deQueue()
 
 class ERView(object):
     """
@@ -92,7 +91,11 @@ class ERView(object):
             print(patient, "is being treated.\n")
     
     def _treatAll(self):
-        pass
+        if self._model.isEmpty():
+            print("No more patients in queue!")
+        else:
+            while(not self._model.isEmpty()):
+                self._treatNext()
 
     def _getCondition(self):
         prompt = "Please input the patient's condition:\n" + \
@@ -108,8 +111,6 @@ class ERView(object):
                 return userInput
         except ValueError:
             self._getCondition()
-        
-                 
 
     def run(self):
         """Menu driven command loop for the app"""
@@ -128,8 +129,7 @@ class ERView(object):
             elif 3 == command:
                 self._treatAll()
             else:
-                break    
-
+                break
         
     def _getCommand(self, high, menu):
         """

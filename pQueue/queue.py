@@ -84,7 +84,7 @@ class Queue(object):
         else:
             return False
 
-class priorityQueue(Queue):
+class PriorityQueue(Queue):
     """
     This class is sub class of Queue. This class implements the priority class.
     """
@@ -112,7 +112,7 @@ class priorityQueue(Queue):
             
 
 def main():
-    pq = priorityQueue()
+    pq = PriorityQueue()
     for _ in range(10):
         pq.enQueue(random.randint(1, 100))
     #print(q)
