@@ -28,10 +28,60 @@ class ArrayList(AbstractList):
         while cursor < len(self):
             yield self._item[cursor]
             cursor += 1
+
+    def __getitem__(self, i):
+        """To get the item at position i,
+        precondition: 0 <= i < len(self),
+        or IndexError will be raised."""
+        if i in range(0, len(self)):
+            return self._item[i]
+        else:
+            raise IndexError("List Index out of range.")
+
+    def __setItem__(self, i, value):
+        """To set the item at position i to the given value,
+        Precondition: 0 <= i < len(self), or IndexError will
+        be raised."""
+        if i in range(0, len(self)):
+            self._item[i] = value
+        else:
+            raise IndexError("List Index out of range.")
+
+    def insert(self, i, item):
+        """To insert item at position i"""
+        #Precondition: Resize array here if necessary
+        if i < 0:
+            i = 0
+        elif i > len(self):
+            i = len(self)
+        if i in range(0, len(self)):
+            for j in range(len(self), i, -1):
+                self._item[j] = self._item[j - 1]
+        self._item[i] = item
+        self._size += 1
+        self._modCount += 1
+
+    def pop(self, i = None):
+        """To remove and return the element at i"""
+        #If i is None, then pop the last element in list.
+        if i == None:
+            i = len(self)
+        elif i not in range(0, len(self)):
+            raise IndexError("List index out of range.")
+        
+        temp = self._item[i]
+        for j in range(i, len(self) - 1):
+            self._item[j] = self._item[j + 1]
+
+        return temp
+
+    def listItrator(self):
+        return ArrayListIterator(self)
     
     
 def main():
-    pass
+    lst = [1,2,3,4,5]
+    a = ArrayList(lst)
     
 if "__main__" == __name__:
     main()
