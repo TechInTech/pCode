@@ -41,6 +41,53 @@ class ArrayListIterator(object):
         self._cursor += 1
         return self._backingStore[self._lastItemPos]
 
+    def last(self):
+        """Move the cursor to the ending of the list"""
+        self._cursur = len(self._backingStore)
+        self._lastItemPos = -1
+
+    def replace(self, value):
+        """To replace current item with given value"""
+        #Precondition: self.__lastItemPos should not be -1
+        #PostCondition: Item at current positon is replaced with given value
+        if -1 == self._lastItemPos:
+            raise AttributeError("Current position is not defined.")
+        
+        if self._modCount != self._backingStore.getModCount():
+            raise AttributeError("Link has been modified illegally.")
+
+        self._backingStore[self._lastItemPos] = value
+        self._lastItemPos = -1
+
+    def remove(self):
+        if -1 == self._lastItemPos:
+            raise AttributeError("Current position is not defined.")
+        
+        if self._modCount != self._backingStore.getModCount():
+            raise AttributeError("Link has been modified illegally.")      
+
+        item2Remove = self._backingStore.pop(self._lastItemPos)
+
+        #If the item removed was obtained via next, move cursor back
+
+    def hasPrevious(self):
+        """To judge if current postion has previous node"""
+        return 0 < self._cursor
+
+    def previous(self):
+        """Move the cursor to the previous position of current node"""
+        #Precondition: hasPrevious returns True
+        #Postcondition:
+        if not self.hasPrevious():
+            raise ValueError("No previous item in this list iterator")
+        
+        if self._modCount != self._backingStore.getModCount():
+            raise AttributeError("Illegal modification of backing store.")
+        self._lastItemPos = self._cursor
+        self._cursor -= 1
+        return self._backingStore[self._lastItemPos]
+
+
 #For tesr purpose
 def main():
     pass
