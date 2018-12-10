@@ -59,6 +59,22 @@ class ArrayListIterator(object):
         self._backingStore[self._lastItemPos] = value
         self._lastItemPos = -1
 
+    def insert(self, i, value):
+        """
+        To insert value at position i    
+        """
+        if self._modCount != self._backingStore.getModCount():
+            raise AttributeError("The link has been modified illegally.")
+        
+        #Cursor not defined, so add item to the end of this list
+        if -1 == self._lastItemPos:
+            #will call ArrayList.add() -> ArrayList.insert(value, len(self))
+            self._backingStore.add(value)
+        else:
+            self._backingStore.insert(value, self._lastItemPos)
+        self._lastItemPos = -1
+        self._modCount += 1
+
     def remove(self):
         if -1 == self._lastItemPos:
             raise AttributeError("Current position is not defined.")
@@ -67,6 +83,11 @@ class ArrayListIterator(object):
             raise AttributeError("Link has been modified illegally.")      
 
         item2Remove = self._backingStore.pop(self._lastItemPos)
+        #Need to move cursor back if replace is called after calling next(), only for arraylist.
+        if self._lastItemPos == self._cursor:
+            self._cursor = -1
+        self._modCount += 1
+        self._lastItemPos = -1
 
         #If the item removed was obtained via next, move cursor back
 
