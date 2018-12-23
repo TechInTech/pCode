@@ -8,8 +8,8 @@ Initial Date: Dec 8th, 2018
 """
 
 class BSTNode(object):
-    def __init__(self):
-        pass
+    def __init__(self, data):
+        self._data = data
 
 #For test purpose
 def main():
