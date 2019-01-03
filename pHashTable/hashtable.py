@@ -57,9 +57,76 @@ class HashTable(object):
         self._table[index] = item
         self._size += 1
         self._actualIndex = index
+    
+    def loadFactor(self):
+        """
+        Returns the load factor of this hash table
+        """
+        return float(len(self) / len(self._table))
+
+    def homeIndex(self):
+        """
+        Returns the homeIndex of the item which is just inserted
+        """
+        return self._homeIndex
+
+    def actualInex(self):
+        """
+        Gets the actual index of the item which is just inserted.
+        """
+        return self._actualIndex
+
+    def probeCount(self):
+        """
+        Returns the number of probe for the item which is just inserted.
+        """
+        return self._probeCount
+
+
 
 class Profiler(object):
-    
+    """
+    Represent a profiler for hash table.
+    """
+
+    def __init__(self):
+        self._table = None
+        self._collisions = 0
+        self._probeCount = 0
+
+    def test(self, table, data):
+        """
+        Insert the data into table and gathers statistics
+        """
+        self._table = table
+        self._collisions = 0
+        self._probeCount = 0
+        self._result = "Load Factor Item Inserted " + \
+                        "Home index Actual Index Probes\n"
+        for item in data:
+            loadFactor = table.loadFactor()
+            table.insert(item)
+            homeIndex = table.homeIndex()
+            actualIndex = table.actualInex()
+            probes = table.probeCount()
+            self._probeCount += probes
+            if probes > 0:
+                self._collisions += 1
+            line = "%8.3f%14d%12d%12d%14d" % (loadFactor, item, homeIndex, actualIndex, probes)
+            self._result += line + "\n"
+        
+        self._result += "Total Collisions: " + \
+                        str(self._collisions) + \
+                        "\nTotal Probes: " + \
+                        str(self._probeCount) + \
+                        "\nAverage probes per collision: " + \
+                        str(self._probeCount / self._collisions)
+
+    def __str__(self):
+        if None == self._table:
+            return "No test has been run yet."
+        else:
+            return self._result
 
 #For test purpose
 def main():
